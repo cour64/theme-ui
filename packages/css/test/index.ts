@@ -25,11 +25,13 @@ const theme: Theme = {
   },
   buttons: {
     primary: {
-      p: 3,
-      fontWeight: 'bold',
-      color: 'white',
       bg: 'primary',
-      borderRadius: 2,
+    },
+    small: {
+      fontSize: 1,
+    },
+    mediuam: {
+      fontSize: 2,
     },
   },
   text: {
@@ -54,6 +56,29 @@ const theme: Theme = {
   },
 }
 
+test('returns multiple variants from theme', () => {
+  const result = css({
+    fontSize: [1, 2],
+  })(theme)
+  expect(result).toEqual({
+    fontSize: 14,
+    '@media screen and (min-width: 40em)': { fontSize: 16 },
+  })
+})
+
+/*
+test('returns multiple variants from theme', () => {
+  const result = css({
+    variants: ['buttons.primary', ['buttons.small', 'buttons.medium']],
+  })(theme)
+  expect(result).toEqual({
+    backgroundColor: 'tomato',
+    fontSize: 14,
+  })
+})
+*/
+
+/*
 test('returns a function', () => {
   const result = css()
   expect(typeof result).toBe('function')
@@ -458,3 +483,4 @@ test('returns correct media query order 2', () => {
     'paddingBottom',
   ])
 })
+*/

@@ -173,10 +173,46 @@ const responsive = (styles: Exclude<SystemStyleObject, UseThemeFunction>) => (
       typeof styles[key] === 'function' ? styles[key](theme) : styles[key]
 
     if (value == null) continue
+
     if (!Array.isArray(value)) {
       next[key] = value
       continue
     }
+
+    if (key === 'variants') {
+      let variants = []
+      let mediaVariants = []
+      for (let i = 0; i < value.length; i++) {
+        const variant =
+          typeof value[i] === 'function' ? value[i](theme) : value[i]
+
+        if (variant == null) continue
+
+        if (!Array.isArray(variant)) {
+          variants = [...variants, variant]
+          next[key] = variants
+          continue
+        }
+
+        for (let i = 0; i < variant.slice(0, mediaQueries.length).length; i++) {
+          const media = mediaQueries[i]
+          if (!media) {
+            variants = [...variants, variant]
+            next[key] = variants
+            continue
+          }
+
+          next[media] = next[media] || {}
+
+          if (value[i] == null) continue
+
+          mediaVariants = [...mediaVariants, variant[i]]
+          next[media][key] = mediaVariants
+        }
+      }
+      continue
+    }
+
     for (let i = 0; i < value.slice(0, mediaQueries.length).length; i++) {
       const media = mediaQueries[i]
       if (!media) {
@@ -205,6 +241,8 @@ export const css = (args: SystemStyleObject = {}) => (
   const obj = typeof args === 'function' ? args(theme) : args
   const styles = responsive(obj)(theme)
 
+  console.log(styles)
+
   for (const key in styles) {
     const x = styles[key]
     const val = typeof x === 'function' ? x(theme) : x
@@ -212,6 +250,15 @@ export const css = (args: SystemStyleObject = {}) => (
     if (key === 'variant') {
       const variant = css(get(theme, val))(theme)
       result = { ...result, ...variant }
+      continue
+    }
+
+    if (key === 'variants') {
+      // loop through each variant
+      for (let i = 0; i < val.length; i++) {
+        const variants = css(get(theme, val[i]))(theme)
+        result = { ...result, ...variants }
+      }
       continue
     }
 
