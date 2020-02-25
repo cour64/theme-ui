@@ -445,6 +445,34 @@ interface VariantProperty {
   variant: string
 }
 
+interface VariantsProperty {
+  /**
+   * **`Variants'`** can be an array of multiple variants which gets merged, responsive styles can be achieved with a 2D array.
+   *
+   * @example
+   * const theme = {
+   *   buttons: {
+   *     primary: {
+   *       p: 3,
+   *       fontWeight: 'bold',
+   *       color: 'white',
+   *       bg: 'primary',
+   *       borderRadius: 2,
+   *     },
+   *     small: {
+   *       fontSize: 1
+   *     }
+   *   },
+   * }
+   * const result = css({
+   *   variants: ['buttons.primary', 'buttons.small']
+   * })(theme)
+   *
+   * @see https://styled-system.com/variants
+   */
+  variants: string | string[]
+}
+
 export interface UseThemeFunction {
   (theme: any): Exclude<SystemStyleObject, UseThemeFunction>
 }
@@ -459,6 +487,7 @@ export type SystemStyleObject =
   | CSSPseudoSelectorProps
   | CSSSelectorObject
   | VariantProperty
+  | VariantsProperty
   | UseThemeFunction
 
 type ObjectOrArray<T> = T[] | { [K: string]: T | ObjectOrArray<T> }

@@ -4,6 +4,13 @@ import { SystemStyleObject, UseThemeFunction, Theme } from './types'
 
 export * from './types'
 
+// to enable deep level flatten use recursion with reduce and concat
+const flatDeep = arr =>
+  arr.reduce(
+    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
+    []
+  )
+
 export function get(
   obj: object,
   key: string | number,
@@ -194,19 +201,25 @@ const responsive = (styles: Exclude<SystemStyleObject, UseThemeFunction>) => (
           continue
         }
 
-        for (let i = 0; i < variant.slice(0, mediaQueries.length).length; i++) {
+        const flatVariant = flatDeep(variant)
+        for (
+          let i = 0;
+          i < flatVariant.slice(0, mediaQueries.length).length;
+          i++
+        ) {
           const media = mediaQueries[i]
+
           if (!media) {
-            variants = [...variants, variant]
+            variants = [...variants, flatVariant[i]]
             next[key] = variants
             continue
           }
 
           next[media] = next[media] || {}
 
-          if (value[i] == null) continue
+          if (flatVariant[i] == null) continue
 
-          mediaVariants = [...mediaVariants, variant[i]]
+          mediaVariants = [...mediaVariants, flatVariant[i]]
           next[media][key] = mediaVariants
         }
       }
@@ -241,8 +254,6 @@ export const css = (args: SystemStyleObject = {}) => (
   const obj = typeof args === 'function' ? args(theme) : args
   const styles = responsive(obj)(theme)
 
-  console.log(styles)
-
   for (const key in styles) {
     const x = styles[key]
     const val = typeof x === 'function' ? x(theme) : x
@@ -254,9 +265,9 @@ export const css = (args: SystemStyleObject = {}) => (
     }
 
     if (key === 'variants') {
-      // loop through each variant
-      for (let i = 0; i < val.length; i++) {
-        const variants = css(get(theme, val[i]))(theme)
+      const variantsArray = flatDeep([val])
+      for (let i = 0; i < variantsArray.length; i++) {
+        const variants = css(get(theme, variantsArray[i]))(theme)
         result = { ...result, ...variants }
       }
       continue

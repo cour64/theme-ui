@@ -30,7 +30,7 @@ const theme: Theme = {
     small: {
       fontSize: 1,
     },
-    mediuam: {
+    medium: {
       fontSize: 2,
     },
   },
@@ -56,27 +56,50 @@ const theme: Theme = {
   },
 }
 
-test('returns multiple variants from theme', () => {
+test('returns multiple variants merged from theme', () => {
   const result = css({
-    fontSize: [1, 2],
-  })(theme)
-  expect(result).toEqual({
-    fontSize: 14,
-    '@media screen and (min-width: 40em)': { fontSize: 16 },
-  })
-})
-
-/*
-test('returns multiple variants from theme', () => {
-  const result = css({
-    variants: ['buttons.primary', ['buttons.small', 'buttons.medium']],
+    variants: ['buttons.primary', 'buttons.small'],
   })(theme)
   expect(result).toEqual({
     backgroundColor: 'tomato',
     fontSize: 14,
   })
 })
-*/
+
+test('handles responsive multiple variants', () => {
+  const result = css({
+    variants: ['buttons.primary', ['buttons.small', 'buttons.medium']],
+  })(theme)
+  expect(result).toEqual({
+    backgroundColor: 'tomato',
+    fontSize: 14,
+    '@media screen and (min-width: 40em)': {
+      fontSize: 16,
+    },
+  })
+})
+
+test('multiple variants works with responsive array with incorrect nesting', () => {
+  const result = css({
+    variants: ['buttons.primary', ['buttons.small', ['buttons.medium']]],
+  })(theme)
+  expect(result).toEqual({
+    backgroundColor: 'tomato',
+    fontSize: 14,
+    '@media screen and (min-width: 40em)': {
+      fontSize: 16,
+    },
+  })
+})
+
+test('multiple variants works with string value', () => {
+  const result = css({
+    variants: 'buttons.primary',
+  })(theme)
+  expect(result).toEqual({
+    backgroundColor: 'tomato',
+  })
+})
 
 /*
 test('returns a function', () => {
