@@ -96,7 +96,10 @@ test('handles specificty with multiple variants', () => {
 
 test('handles responsive multiple variants', () => {
   const result = css({
-    variants: ['buttons.primary', ['buttons.small', 'buttons.medium']],
+    variants: [
+      ['buttons.primary', 'buttons.secondary'],
+      ['buttons.small', 'buttons.medium'],
+    ],
   })(theme)
   expect(result).toEqual({
     padding: 16,
@@ -106,12 +109,17 @@ test('handles responsive multiple variants', () => {
     borderRadius: 2,
     fontSize: 14,
     '@media screen and (min-width: 40em)': {
+      padding: 16,
+      fontWeight: 600,
+      color: 'white',
+      backgroundColor: 'cyan',
+      borderRadius: 2,
       fontSize: 16,
     },
   })
 })
 
-test('multiple variants works with responsive array with incorrect nesting', () => {
+test('multiple variants works with responsive array and deep nesting', () => {
   const result = css({
     variants: ['buttons.primary', ['buttons.small', ['buttons.medium']]],
   })(theme)
@@ -139,13 +147,6 @@ test('multiple variants works with string value', () => {
     backgroundColor: 'tomato',
     borderRadius: 2,
   })
-})
-
-test('multiple variants works with empty array', () => {
-  const result = css({
-    variants: [],
-  })(theme)
-  expect(result).toEqual({})
 })
 
 /*

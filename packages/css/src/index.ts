@@ -5,12 +5,14 @@ import { SystemStyleObject, UseThemeFunction, Theme } from './types'
 
 export * from './types'
 
-// Utility to deeply flatten nested arrays
-const flatDeep = arr =>
-  arr.reduce(
+// util to flatten deeply nested arrays
+const flatDeep = arr => {
+  if (!Array.isArray(arr)) return arr
+  return arr.reduce(
     (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
     []
   )
+}
 
 export function get(
   obj: object,
@@ -188,40 +190,27 @@ const responsive = (styles: Exclude<SystemStyleObject, UseThemeFunction>) => (
     }
 
     if (key === 'variants') {
-      let variants = []
-      let mediaVariants = []
       for (let i = 0; i < value.length; i++) {
-        const variant =
+        const variant = flatDeep(
           typeof value[i] === 'function' ? value[i](theme) : value[i]
+        )
 
         if (variant == null) continue
 
         if (!Array.isArray(variant)) {
-          variants = [...variants, variant]
-          next[key] = variants
+          next[key] = [...(next[key] || []), variant]
           continue
         }
 
-        const flatVariant = flatDeep(variant)
-        for (
-          let i = 0;
-          i < flatVariant.slice(0, mediaQueries.length).length;
-          i++
-        ) {
+        for (let i = 0; i < variant.slice(0, mediaQueries.length).length; i++) {
           const media = mediaQueries[i]
-
           if (!media) {
-            variants = [...variants, flatVariant[i]]
-            next[key] = variants
+            next[key] = [...(next[key] || []), variant[i]]
             continue
           }
-
           next[media] = next[media] || {}
-
-          if (flatVariant[i] == null) continue
-
-          mediaVariants = [...mediaVariants, flatVariant[i]]
-          next[media][key] = mediaVariants
+          if (variant[i] == null) continue
+          next[media][key] = [...(next[media][key] || []), variant[i]]
         }
       }
       continue
