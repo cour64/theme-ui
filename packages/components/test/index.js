@@ -48,6 +48,10 @@ const theme = {
       p: 4,
       bg: 'highlight',
     },
+    boop: {
+      color: 'primary',
+      m: 4,
+    },
   },
   cards: {
     primary: {
@@ -132,6 +136,18 @@ describe('Box', () => {
     expect(json).toHaveStyleRule('padding', '32px')
   })
 
+  test('renders with variants prop', () => {
+    const json = renderJSON(
+      <ThemeProvider theme={theme}>
+        <Box variants={['boxes.beep', 'boxes.boop']} />
+      </ThemeProvider>
+    )
+    expect(json).toHaveStyleRule('background-color', 'highlight')
+    expect(json).toHaveStyleRule('padding', '32px')
+    expect(json).toHaveStyleRule('color', 'primary')
+    expect(json).toHaveStyleRule('margin', '32px')
+  })
+
   test('renders with base styles', () => {
     const json = renderJSON(
       <Box
@@ -159,6 +175,18 @@ describe('Box', () => {
     )
     expect(json).toHaveStyleRule('background-color', 'highlight')
     expect(json).toHaveStyleRule('padding', '32px')
+  })
+
+  test('renders with __themeKey variants', () => {
+    const json = renderJSON(
+      <ThemeProvider theme={theme}>
+        <Box __themeKey="boxes" variants={['beep', 'boop']} />
+      </ThemeProvider>
+    )
+    expect(json).toHaveStyleRule('background-color', 'highlight')
+    expect(json).toHaveStyleRule('padding', '32px')
+    expect(json).toHaveStyleRule('color', 'primary')
+    expect(json).toHaveStyleRule('margin', '32px')
   })
 })
 
