@@ -1,10 +1,11 @@
+import { all } from 'deepmerge'
 import * as CSS from 'csstype'
 
 import { SystemStyleObject, UseThemeFunction, Theme } from './types'
 
 export * from './types'
 
-// to enable deep level flatten use recursion with reduce and concat
+// Utility to deeply flatten nested arrays
 const flatDeep = arr =>
   arr.reduce(
     (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
@@ -265,11 +266,8 @@ export const css = (args: SystemStyleObject = {}) => (
     }
 
     if (key === 'variants') {
-      const variantsArray = flatDeep([val])
-      for (let i = 0; i < variantsArray.length; i++) {
-        const variants = css(get(theme, variantsArray[i]))(theme)
-        result = { ...result, ...variants }
-      }
+      const variants = css(all(flatDeep([val]).map(v => get(theme, v))))(theme)
+      result = { ...result, ...variants }
       continue
     }
 

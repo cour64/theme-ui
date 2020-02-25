@@ -25,7 +25,18 @@ const theme: Theme = {
   },
   buttons: {
     primary: {
+      p: 3,
+      fontWeight: 'bold',
+      color: 'white',
       bg: 'primary',
+      borderRadius: 2,
+    },
+    secondary: {
+      p: 3,
+      fontWeight: 'bold',
+      color: 'white',
+      bg: 'secondary',
+      borderRadius: 2,
     },
     small: {
       fontSize: 1,
@@ -61,8 +72,25 @@ test('returns multiple variants merged from theme', () => {
     variants: ['buttons.primary', 'buttons.small'],
   })(theme)
   expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
     backgroundColor: 'tomato',
+    borderRadius: 2,
     fontSize: 14,
+  })
+})
+
+test('handles specificty with multiple variants', () => {
+  const result = css({
+    variants: ['buttons.primary', 'buttons.secondary'],
+  })(theme)
+  expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: 'cyan',
+    borderRadius: 2,
   })
 })
 
@@ -71,7 +99,11 @@ test('handles responsive multiple variants', () => {
     variants: ['buttons.primary', ['buttons.small', 'buttons.medium']],
   })(theme)
   expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
     backgroundColor: 'tomato',
+    borderRadius: 2,
     fontSize: 14,
     '@media screen and (min-width: 40em)': {
       fontSize: 16,
@@ -84,7 +116,11 @@ test('multiple variants works with responsive array with incorrect nesting', () 
     variants: ['buttons.primary', ['buttons.small', ['buttons.medium']]],
   })(theme)
   expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
     backgroundColor: 'tomato',
+    borderRadius: 2,
     fontSize: 14,
     '@media screen and (min-width: 40em)': {
       fontSize: 16,
@@ -97,8 +133,19 @@ test('multiple variants works with string value', () => {
     variants: 'buttons.primary',
   })(theme)
   expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
     backgroundColor: 'tomato',
+    borderRadius: 2,
   })
+})
+
+test('multiple variants works with empty array', () => {
+  const result = css({
+    variants: [],
+  })(theme)
+  expect(result).toEqual({})
 })
 
 /*
