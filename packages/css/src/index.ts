@@ -1,18 +1,10 @@
+import flatten from '@flatten/array'
 import { all } from 'deepmerge'
 import * as CSS from 'csstype'
 
 import { SystemStyleObject, UseThemeFunction, Theme } from './types'
 
 export * from './types'
-
-// util to flatten deeply nested arrays
-const flatDeep = arr => {
-  if (!Array.isArray(arr)) return arr
-  return arr.reduce(
-    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
-    []
-  )
-}
 
 export function get(
   obj: object,
@@ -191,9 +183,9 @@ const responsive = (styles: Exclude<SystemStyleObject, UseThemeFunction>) => (
 
     if (key === 'variants') {
       for (let i = 0; i < value.length; i++) {
-        const variant = flatDeep(
-          typeof value[i] === 'function' ? value[i](theme) : value[i]
-        )
+        const variant = flatten([
+          typeof value[i] === 'function' ? value[i](theme) : value[i],
+        ])
 
         if (variant == null) continue
 
@@ -255,7 +247,7 @@ export const css = (args: SystemStyleObject = {}) => (
     }
 
     if (key === 'variants') {
-      const variants = css(all(flatDeep([val]).map(v => get(theme, v))))(theme)
+      const variants = css(all(flatten([val]).map(v => get(theme, v))))(theme)
       result = { ...result, ...variants }
       continue
     }
