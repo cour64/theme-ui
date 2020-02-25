@@ -11,10 +11,12 @@
   "dependencies": {
     "@emotion/core": "^10.0.0",
     "@emotion/styled": "^10.0.0",
+    "@flatten/array": "^1.1.8",
     "@styled-system/color": "^5.1.2",
     "@styled-system/should-forward-prop": "^5.1.2",
     "@styled-system/space": "^5.1.2",
-    "@theme-ui/css": "^0.3.1"
+    "@theme-ui/css": "^0.3.1",
+    "deepmerge": "^4.2.2"
   },
   "peerDependencies": {
     "react": "^16.8.0"

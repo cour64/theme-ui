@@ -148,6 +148,16 @@ describe('Box', () => {
     expect(json).toHaveStyleRule('margin', '32px')
   })
 
+  test('renders with variants prop as string', () => {
+    const json = renderJSON(
+      <ThemeProvider theme={theme}>
+        <Box variants="boxes.beep" />
+      </ThemeProvider>
+    )
+    expect(json).toHaveStyleRule('background-color', 'highlight')
+    expect(json).toHaveStyleRule('padding', '32px')
+  })
+
   test('renders with base styles', () => {
     const json = renderJSON(
       <Box

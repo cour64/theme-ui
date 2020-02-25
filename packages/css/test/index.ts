@@ -32,11 +32,8 @@ const theme: Theme = {
       borderRadius: 2,
     },
     secondary: {
-      p: 3,
-      fontWeight: 'bold',
-      color: 'white',
+      variant: 'buttons.primary',
       bg: 'secondary',
-      borderRadius: 2,
     },
     small: {
       fontSize: 1,
@@ -66,88 +63,6 @@ const theme: Theme = {
     small: 5,
   },
 }
-
-test('returns multiple variants merged from theme', () => {
-  const result = css({
-    variants: ['buttons.primary', 'buttons.small'],
-  })(theme)
-  expect(result).toEqual({
-    padding: 16,
-    fontWeight: 600,
-    color: 'white',
-    backgroundColor: 'tomato',
-    borderRadius: 2,
-    fontSize: 14,
-  })
-})
-
-test('handles specificty with multiple variants', () => {
-  const result = css({
-    variants: ['buttons.primary', 'buttons.secondary'],
-  })(theme)
-  expect(result).toEqual({
-    padding: 16,
-    fontWeight: 600,
-    color: 'white',
-    backgroundColor: 'cyan',
-    borderRadius: 2,
-  })
-})
-
-test('handles responsive multiple variants', () => {
-  const result = css({
-    variants: [
-      ['buttons.primary', 'buttons.secondary'],
-      ['buttons.small', 'buttons.medium'],
-    ],
-  })(theme)
-  expect(result).toEqual({
-    padding: 16,
-    fontWeight: 600,
-    color: 'white',
-    backgroundColor: 'tomato',
-    borderRadius: 2,
-    fontSize: 14,
-    '@media screen and (min-width: 40em)': {
-      padding: 16,
-      fontWeight: 600,
-      color: 'white',
-      backgroundColor: 'cyan',
-      borderRadius: 2,
-      fontSize: 16,
-    },
-  })
-})
-
-test('multiple variants works with responsive array and deep nesting', () => {
-  const result = css({
-    variants: ['buttons.primary', ['buttons.small', ['buttons.medium']]],
-  })(theme)
-  expect(result).toEqual({
-    padding: 16,
-    fontWeight: 600,
-    color: 'white',
-    backgroundColor: 'tomato',
-    borderRadius: 2,
-    fontSize: 14,
-    '@media screen and (min-width: 40em)': {
-      fontSize: 16,
-    },
-  })
-})
-
-test('multiple variants works with string value', () => {
-  const result = css({
-    variants: 'buttons.primary',
-  })(theme)
-  expect(result).toEqual({
-    padding: 16,
-    fontWeight: 600,
-    color: 'white',
-    backgroundColor: 'tomato',
-    borderRadius: 2,
-  })
-})
 
 /*
 test('returns a function', () => {
@@ -289,13 +204,13 @@ test('supports functional values', () => {
 
 test('returns variants from theme', () => {
   const result = css({
-    variant: 'buttons.primary',
+    variant: 'buttons.secondary',
   })(theme)
   expect(result).toEqual({
     padding: 16,
     fontWeight: 600,
     color: 'white',
-    backgroundColor: 'tomato',
+    backgroundColor: 'cyan',
     borderRadius: 2,
   })
 })
@@ -553,5 +468,105 @@ test('returns correct media query order 2', () => {
     'paddingTop',
     'paddingBottom',
   ])
+})
+
+test('returns multiple variants merged from theme', () => {
+  const result = css({
+    variants: ['buttons.primary', 'buttons.small'],
+  })(theme)
+  expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: 'tomato',
+    borderRadius: 2,
+    fontSize: 14,
+  })
+})
+*/
+
+/**
+ * TODO: MAKE THIS WORK!!
+ *
+ * Currently deepmerge is replacing the bg prop in-place and then adding the variants prop to the end
+ * causing the variants prop to overwrite the bg prop e.g.
+ * {
+ *    p: 3,
+ *    fontWeight: 'bold',
+ *    color: 'white',
+ *    bg: 'secondary',
+ *    borderRadius: 2,
+ *    variant: 'buttons.primary'
+ * }
+ *
+ * the props applied by the variant prop 'buttons.primary' overwrite the bg prop since the variant prop is defined last
+ */
+test('handles specificty with multiple variants', () => {
+  const result = css({
+    variants: ['buttons.primary', 'buttons.secondary'],
+  })(theme)
+  expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: 'cyan',
+    borderRadius: 2,
+  })
+})
+
+/*
+test('handles responsive multiple variants', () => {
+  const result = css({
+    variants: [
+      ['buttons.primary', 'buttons.secondary'],
+      ['buttons.small', 'buttons.medium'],
+    ],
+  })(theme)
+  expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: 'tomato',
+    borderRadius: 2,
+    fontSize: 14,
+    '@media screen and (min-width: 40em)': {
+      padding: 16,
+      fontWeight: 600,
+      color: 'white',
+      backgroundColor: 'cyan',
+      borderRadius: 2,
+      fontSize: 16,
+    },
+  })
+})
+
+test('multiple variants works with responsive array and deep nesting', () => {
+  const result = css({
+    variants: ['buttons.primary', ['buttons.small', ['buttons.medium']]],
+  })(theme)
+  expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: 'tomato',
+    borderRadius: 2,
+    fontSize: 14,
+    '@media screen and (min-width: 40em)': {
+      fontSize: 16,
+    },
+  })
+})
+
+test('multiple variants works with string value', () => {
+  const result = css({
+    variants: 'buttons.primary',
+  })(theme)
+  expect(result).toEqual({
+    padding: 16,
+    fontWeight: 600,
+    color: 'white',
+    backgroundColor: 'tomato',
+    borderRadius: 2,
+  })
 })
 */

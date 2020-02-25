@@ -1,5 +1,5 @@
 import flatten from '@flatten/array'
-import { all } from 'deepmerge'
+import deepmerge from 'deepmerge'
 import * as CSS from 'csstype'
 
 import { SystemStyleObject, UseThemeFunction, Theme } from './types'
@@ -247,7 +247,10 @@ export const css = (args: SystemStyleObject = {}) => (
     }
 
     if (key === 'variants') {
-      const variants = css(all(flatten([val]).map(v => get(theme, v))))(theme)
+      console.log(deepmerge.all(flatten([val]).map(v => get(theme, v))))
+      const variants = css(
+        deepmerge.all(flatten([val]).map(v => get(theme, v)))
+      )(theme)
       result = { ...result, ...variants }
       continue
     }
